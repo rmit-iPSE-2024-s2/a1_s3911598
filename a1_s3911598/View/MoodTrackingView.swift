@@ -33,10 +33,10 @@ struct MoodView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading,spacing: 20) {
-                    Text("Daily Moods")
-                        .font(.custom("Chalkboard SE", size: 24))
-                        .padding([.leading, .top], 16)
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Daily Tasks")
+                    .font(.custom("Chalkboard SE", size: 24))
+                    .padding([.leading, .top], 16)
                 
                 // My daily mood record section
                 cardView {
@@ -45,7 +45,7 @@ struct MoodView: View {
                             Image(systemName: "heart.fill")
                                 .foregroundColor(.red)
                             Text("My daily mood record")
-                                .font(.headline)
+                                .font(Font.custom("Chalkboard SE", size: 20))
                             Spacer()
                             Button(action: {
                                 showCalendar = true
@@ -53,11 +53,9 @@ struct MoodView: View {
                                 HStack {
                                     Image(systemName: "eyes")
                                     Text("View all")
+                                        .font(Font.custom("Chalkboard SE", size: 16))
                                 }
                             }
-//                            .sheet(isPresented: $showCalendar) {
-//                                CalendarView()
-//                            }
                         }
                         .padding(.horizontal)
 
@@ -67,24 +65,25 @@ struct MoodView: View {
                                 .frame(width: 50, height: 50)
                             VStack(alignment: .leading) {
                                 Text("Recent")
-                                    .font(.subheadline)
+                                    .font(Font.custom("Chalkboard SE", size: 16))
                                     .foregroundColor(.gray)
                                 Text("08-30")
-                                    .font(.caption)
+                                    .font(Font.custom("Chalkboard SE", size: 14))
                                 Text("Very unpleasant")
-                                    .font(.headline)
+                                    .font(Font.custom("Chalkboard SE", size: 20))
                                     .foregroundColor(.primary)
                             }
                             Spacer()
                             VStack(alignment: .trailing) {
                                 Text("Mood tracking")
-                                    .font(.headline)
+                                    .font(Font.custom("Chalkboard SE", size: 20))
                                 Spacer()
                                 Button(action: {
                                     showMoodTracking = true
                                 }) {
                                     HStack {
                                         Text("Go record")
+                                            .font(Font.custom("Chalkboard SE", size: 16))
                                         Image(systemName: "pencil")
                                     }
                                     .padding(.horizontal)
@@ -110,7 +109,7 @@ struct MoodView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Text("🌼 Recent mood distribution")
-                                .font(.headline)
+                                .font(Font.custom("Chalkboard SE", size: 20))
                             Spacer()
                         }
                         .padding(.horizontal)
@@ -136,14 +135,14 @@ struct MoodView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
                             Text("Today")
-                                .font(.caption)
+                                .font(Font.custom("Chalkboard SE", size: 14))
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 4)
                                 .background(Color.gray.opacity(0.2))
                                 .cornerRadius(5)
                             Spacer()
                             Text(Date(), style: .date)
-                                .font(.headline)
+                                .font(Font.custom("Chalkboard SE", size: 20))
                         }
                         .padding(.horizontal)
                         
@@ -154,7 +153,7 @@ struct MoodView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: 150)
                                 Text("No Record")
-                                    .font(.headline)
+                                    .font(Font.custom("Chalkboard SE", size: 20))
                                     .foregroundColor(.gray)
                             }
                             .padding(.top, 20)
@@ -162,11 +161,11 @@ struct MoodView: View {
                             ForEach(moodRecords) { record in
                                 HStack {
                                     Text(record.time)
-                                        .font(.headline)
+                                        .font(Font.custom("Chalkboard SE", size: 20))
                                     Spacer()
                                     HStack {
                                         Text(record.mood.description)
-                                            .font(.subheadline)
+                                            .font(Font.custom("Chalkboard SE", size: 16))
                                         Image(systemName: record.mood.iconName)
                                     }
                                     .padding(6)
@@ -283,9 +282,6 @@ struct ResponsiveLayout: ViewModifier {
     }
 }
 
-
-
-
 struct MoodTrackingView: View {
     @Binding var isActive: Bool
     @State private var moodValue: Double = 0.5
@@ -321,7 +317,6 @@ struct MoodTrackingView: View {
             VStack(spacing: 20) {
                 Spacer()
                 
-                //will add a image here
                 Image("image")
                     .resizable()
                     .scaledToFit()
@@ -331,9 +326,8 @@ struct MoodTrackingView: View {
                     Slider(value: $moodValue)
                         .padding(.horizontal)
                     
-                    // Display mood label in a speech bubble style
                     Text(moodLabels[Int(moodValue * Double(moodLabels.count - 1))])
-                        .font(.headline)
+                        .font(Font.custom("Chalkboard SE", size: 20))
                         .padding(.all, 8)
                         .background(Color.white)
                         .cornerRadius(20)
@@ -347,11 +341,11 @@ struct MoodTrackingView: View {
                 
                 HStack {
                     Text("Very unpleasant")
-                        .font(.caption)
+                        .font(Font.custom("Chalkboard SE", size: 14))
                         .foregroundColor(.gray)
                     Spacer()
                     Text("Very pleasant")
-                        .font(.caption)
+                        .font(Font.custom("Chalkboard SE", size: 14))
                         .foregroundColor(.gray)
                 }
                 .padding(.horizontal)
@@ -363,9 +357,9 @@ struct MoodTrackingView: View {
                     self.showingMoodDetailView = true
                 }) {
                     HStack {
-                        Spacer() // Ensure the button can be clicked anywhere within its frame
+                        Spacer()
                         Text("Next")
-                            .font(.headline)
+                            .font(Font.custom("Chalkboard SE", size: 20))
                             .foregroundColor(.white)
                         Spacer()
                     }
@@ -383,7 +377,6 @@ struct MoodTrackingView: View {
     }
 }
 
-
 struct MoodDetailView: View {
     @State private var moodText: String = ""
     @Environment(\.dismiss) var dismiss
@@ -397,7 +390,7 @@ struct MoodDetailView: View {
         VStack(alignment: .center) {
             // Show current date
             Text(currentDate, formatter: dateFormatter)
-                .font(.headline)
+                .font(Font.custom("Chalkboard SE", size: 18))
                 .padding(.top, 20)
 
             // Show the user's selected mood image
@@ -409,13 +402,13 @@ struct MoodDetailView: View {
 
             // Show the selected mood
             Text("“ \(selectedMood) ”")
-                .font(.largeTitle)
+                .font(Font.custom("Chalkboard SE", size: 30))
                 .fontWeight(.bold)
                 .padding(.vertical, 10)
 
             // Display different text based on the selected mood
             Text(displayText(for: selectedMood))
-                .font(.body)
+                .font(Font.custom("Chalkboard SE", size: 18))
                 .padding(.bottom, 10)
                 .padding(.horizontal)
                 .background(Color.white.opacity(0.8))
@@ -424,6 +417,7 @@ struct MoodDetailView: View {
             // Mood input TextField
             TextField("Write down your mood", text: $moodText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .font(Font.custom("Chalkboard SE", size: 16))
                 .padding()
                 .background(Color(UIColor.systemGray6))
                 .cornerRadius(10)
@@ -437,7 +431,7 @@ struct MoodDetailView: View {
                 HStack {
                     Spacer()
                     Text("Done")
-                        .font(.headline)
+                        .font(Font.custom("Chalkboard SE", size: 20))
                         .foregroundColor(.white)
                     Spacer()
                 }
@@ -448,7 +442,7 @@ struct MoodDetailView: View {
             .padding(.bottom, 20)
         }
         .padding(.horizontal)
-        .background(Color(UIColor.systemGray5).edgesIgnoringSafeArea(.all))  // Set background color
+        .background(Color(UIColor.systemGray5).edgesIgnoringSafeArea(.all))
     }
 
     // Return the corresponding image name based on the selected mood
@@ -491,4 +485,3 @@ struct MoodView_Previews: PreviewProvider {
         MoodView()
     }
 }
-
