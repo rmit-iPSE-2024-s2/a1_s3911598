@@ -1,0 +1,15 @@
+# Xcode User Data
+*.xcuserstate
+*.xcuserdatad
+*.xcscmblueprint
+*.xccheckout
+
+# Breakpoints
+*.xcdebugger
+*.xcdebugger/Breakpoints_v2.xcbkptlist
+
+# Xcode Schemes
+*.xcscheme
+*.xcschememanagement.plist
+.DS_Store
+a1_s3911598.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
