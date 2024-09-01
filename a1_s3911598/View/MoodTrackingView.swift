@@ -7,111 +7,176 @@
 
 
 import SwiftUI
+import Charts
 
 struct MoodView: View {
     @State private var showCalendar = false
     @State private var showMoodTracking = false
     @State private var isActive = false
-
+    
+    // Sample data for the chart
+    let moodData: [MoodEntry] = [
+        MoodEntry(date: "Aug 25", mood: .veryPleasant),
+        MoodEntry(date: "Aug 26", mood: .pleasant),
+        MoodEntry(date: "Aug 27", mood: .neutral),
+        MoodEntry(date: "Aug 28", mood: .unpleasant),
+        MoodEntry(date: "Aug 29", mood: .veryUnpleasant),
+        MoodEntry(date: "Aug 30", mood: .pleasant)
+    ]
+    
+    // Sample data for today's mood records
+    let moodRecords: [MoodRecord] = [
+        MoodRecord(time: "08:30 AM", mood: .pleasant),
+        MoodRecord(time: "12:45 PM", mood: .neutral),
+        MoodRecord(time: "03:20 PM", mood: .unpleasant)
+    ]
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
+                
                 // My daily mood record section
-                HStack {
-                    Image(systemName: "heart.fill")
-                        .foregroundColor(.red)
-                    Text("My daily mood record")
-                        .font(.headline)
-                    Spacer()
-                    Button(action: {
-                        showCalendar = true
-                    }) {
+                cardView {
+                    VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Image(systemName: "eyes")
-                            Text("View all")
-                        }
-                    }
-                    .sheet(isPresented: $showCalendar) {
-                        CalendarView()
-                    }
-                }
-                .padding(.horizontal)
-                
-                
-                Spacer().frame(height: 20)
-
-                // Mood tracking card
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color("CardBackground"))
-                        .frame(height: 120)
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Recent")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            Text("08-30")
-                                .font(.caption)
-                            Text("Very unpleasant")
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                        }
-                        Spacer()
-                        VStack {
-                            Text("Mood tracking")
+                            Image(systemName: "heart.fill")
+                                .foregroundColor(.red)
+                            Text("My daily mood record")
                                 .font(.headline)
                             Spacer()
                             Button(action: {
-                                showMoodTracking = true
+                                showCalendar = true
                             }) {
                                 HStack {
-                                    Text("Go record")
-                                    Image(systemName: "pencil")
+                                    Image(systemName: "eyes")
+                                    Text("View all")
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 8)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
                             }
-                            .sheet(isPresented: $showMoodTracking) {
-                                MoodTrackingView(isActive: $showMoodTracking)
-                            }
+//                            .sheet(isPresented: $showCalendar) {
+//                                CalendarView()
+//                            }
                         }
-                    }
-                    .padding()
-                }
-                .padding(.horizontal)
+                        .padding(.horizontal)
 
-                // Recent mood distribution section
-                VStack(alignment: .leading) {
-                    HStack {
-                        Text("🌼 Recent mood distribution")
-                            .font(.headline)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color("CardBackground"))
-                            .frame(height: 200)
-                        
-                        // Mood distribution content (Remove the upgrade button)
-                        VStack {
-                            // Custom distribution graph (replace with your data)
-                            Text("Currently displaying sample data")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                        HStack(alignment: .top) {
+                            Image("unpleasant") // Replace image name
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                            VStack(alignment: .leading) {
+                                Text("Recent")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                Text("08-30")
+                                    .font(.caption)
+                                Text("Very unpleasant")
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                            }
                             Spacer()
+                            VStack(alignment: .trailing) {
+                                Text("Mood tracking")
+                                    .font(.headline)
+                                Spacer()
+                                Button(action: {
+                                    showMoodTracking = true
+                                }) {
+                                    HStack {
+                                        Text("Go record")
+                                        Image(systemName: "pencil")
+                                    }
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color("primaryMauve"))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                                    .contentShape(Rectangle())
+                                }
+                                .shadow(radius: 2)
+                                .sheet(isPresented: $showMoodTracking) {
+                                    MoodTrackingView(isActive: $showMoodTracking)
+                                }
+                            }
                         }
-                        .padding()
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    .padding(.vertical)
                 }
                 
-                // More content can go here
+                // Recent mood distribution section
+                cardView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text("🌼 Recent mood distribution")
+                                .font(.headline)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+
+                        // Chart to display mood data
+                        Chart {
+                            ForEach(moodData) { entry in
+                                BarMark(
+                                    x: .value("Date", entry.date),
+                                    y: .value("Mood Level", entry.mood.rawValue)
+                                )
+                                .foregroundStyle(by: .value("Mood", entry.mood.description))
+                            }
+                        }
+                        .frame(height: 200)
+                        .padding()
+                    }
+                    .padding(.vertical)
+                }
+                
+                // Today's mood record section
+                cardView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack {
+                            Text("Today")
+                                .font(.caption)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 4)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(5)
+                            Spacer()
+                            Text(Date(), style: .date)
+                                .font(.headline)
+                        }
+                        .padding(.horizontal)
+                        
+                        if moodRecords.isEmpty {
+                            VStack {
+                                Image("no_record") // Replace with actual image name
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 150)
+                                Text("No Record")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(.top, 20)
+                        } else {
+                            ForEach(moodRecords) { record in
+                                HStack {
+                                    Text(record.time)
+                                        .font(.headline)
+                                    Spacer()
+                                    HStack {
+                                        Text(record.mood.description)
+                                            .font(.subheadline)
+                                        Image(systemName: record.mood.iconName)
+                                    }
+                                    .padding(6)
+                                    .background(record.mood.color.opacity(0.2))
+                                    .cornerRadius(10)
+                                }
+                                .padding(.vertical, 5)
+                            }
+                        }
+                    }
+                    .padding(.vertical)
+                }
+                
                 Spacer()
             }
         }
@@ -122,11 +187,110 @@ struct MoodView: View {
                 Text("Me")
                     .font(.headline)
                     .foregroundColor(.primary)
+                    .padding(.bottom, 5)
             }
         }
         .background(Color("AppBackground").edgesIgnoringSafeArea(.all))
     }
+    
+    // Unified card view style
+    @ViewBuilder
+    func cardView<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white) // or Color("CardBackground") for a custom color
+                .shadow(radius: 5)
+                .padding(.horizontal)
+            
+            content()
+                .padding()
+        }
+    }
 }
+
+struct MoodEntry: Identifiable {
+    let id = UUID()
+    let date: String
+    let mood: MoodLevel
+}
+
+struct MoodRecord: Identifiable {
+    let id = UUID()
+    let time: String
+    let mood: MoodLevel
+}
+
+enum MoodLevel: Int {
+    case veryUnpleasant = 1
+    case unpleasant = 2
+    case neutral = 3
+    case pleasant = 4
+    case veryPleasant = 5
+    
+    var description: String {
+        switch self {
+        case .veryUnpleasant:
+            return "Very Unpleasant"
+        case .unpleasant:
+            return "Unpleasant"
+        case .neutral:
+            return "Neutral"
+        case .pleasant:
+            return "Pleasant"
+        case .veryPleasant:
+            return "Very Pleasant"
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .veryUnpleasant:
+            return "face.dashed"
+        case .unpleasant:
+            return "face.smiling"
+        case .neutral:
+            return "face.neutral"
+        case .pleasant:
+            return "face.smiling.fill"
+        case .veryPleasant:
+            return "face.sunglasses"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .veryUnpleasant:
+            return .red
+        case .unpleasant:
+            return .orange
+        case .neutral:
+            return .gray
+        case .pleasant:
+            return .green
+        case .veryPleasant:
+            return .blue
+        }
+    }
+}
+
+extension View {
+    func responsiveLayout() -> some View {
+        self.modifier(ResponsiveLayout())
+    }
+}
+
+struct ResponsiveLayout: ViewModifier {
+    func body(content: Content) -> some View {
+        GeometryReader { geometry in
+            content
+                .padding(.horizontal, geometry.size.width > 600 ? 30 : 15)
+                .padding(.vertical, geometry.size.width > 600 ? 20 : 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+    }
+}
+
+
 
 
 struct MoodTrackingView: View {
@@ -165,7 +329,7 @@ struct MoodTrackingView: View {
                 Spacer()
                 
                 //will add a image here
-                Image("ImageName") // Use the actual image name
+                Image("image")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150)
