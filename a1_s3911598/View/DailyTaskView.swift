@@ -52,6 +52,16 @@ struct DailyTaskView: View {
                     // Example:
                     ForEach(tasks.filter { $0.sharedWith.isEmpty }) { task in
                         TaskCard(task: task)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+                                        tasks.remove(at: index)
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.gray)
+                            }
                     }
                     .onDelete(perform: deleteTask)
                 }
