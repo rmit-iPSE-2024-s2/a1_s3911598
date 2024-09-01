@@ -33,7 +33,10 @@ struct MoodView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(alignment: .leading,spacing: 20) {
+                    Text("Daily Moods")
+                        .font(.custom("Chalkboard SE", size: 24))
+                        .padding([.leading, .top], 16)
                 
                 // My daily mood record section
                 cardView {
@@ -178,16 +181,6 @@ struct MoodView: View {
                 }
                 
                 Spacer()
-            }
-        }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Me")
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                    .padding(.bottom, 5)
             }
         }
         .background(Color("AppBackground").edgesIgnoringSafeArea(.all))
